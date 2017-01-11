@@ -1,0 +1,15 @@
+*.elf
+*.map
+*.bak
+*.swp
+*.o
+*.d
+*.i
+*.hex
+examples/f1/*/obj
+examples/*/*.o
+*.creator
+*.user
+*.files
+*.includes
+*.config
