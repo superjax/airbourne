@@ -49,7 +49,7 @@ bool HMC5883L::init(I2C* I2CDev)
 
     // Clear any data with the wrong gain
     uint32_t timeout = HMC58X3_TIMEOUT;
-    vector_t magADC;
+    vector3 magADC;
     while(!DRDY_.read() && --timeout > 0); // Wait fo the data ready to fire
     if(timeout == 0)
     {
@@ -117,7 +117,7 @@ void HMC5883L::update()
     return;
 }
 
-void HMC5883L::read(vector_t* mag)
+void HMC5883L::read(vector3 *mag)
 {
     new_data_ = false;
     raw_data_[0] = (int16_t)((data_buffer_[0] << 8) | data_buffer_[1]);
@@ -129,7 +129,7 @@ void HMC5883L::read(vector_t* mag)
     mag->z = (float)raw_data_[2] * gain_.z;
 }
 
-void HMC5883L::blocking_read(vector_t *data)
+void HMC5883L::blocking_read(vector3 *data)
 {
     i2c->read(HMC58X3_ADDR, HMC58X3_DATA, 6, data_buffer_);
     // During calibration, gain is 1.0, so the read returns normal non-calibrated values.

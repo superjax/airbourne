@@ -1,6 +1,11 @@
 #ifndef AIRBOURNE_H
 #define AIRBOURNE_H
 
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "board.h"
 #include "barometer.h"
 #include "eeprom.h"
@@ -19,4 +24,14 @@
 #include "rc_ppm.h"
 #include "serialport.h"
 #include "uart.h"
+
+#include "vector3.h"
+#include "quaternion.h"
+#include "turbotrig.h"
+
+void airbourne_init();
+
+extern LED LED0;
+extern LED LED1;
+
 #endif // AIRBOURNE_H

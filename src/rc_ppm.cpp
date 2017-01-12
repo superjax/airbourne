@@ -2,10 +2,7 @@
 
 RC_PPM* RC_PPMPtr = NULL;
 
-RC_PPM::RC_PPM()
-{
-    RC_PPMPtr = this;
-}
+RC_PPM::RC_PPM(){}
 
 
 void RC_PPM::init()
@@ -14,7 +11,7 @@ void RC_PPM::init()
     GPIO_ = rc_hardware[0].GPIO;
     TIM_ = rc_hardware[0].TIM;
     pin_number_ = rc_hardware[0].pin;
-    channel_ = rc_hardware[0].pin;
+    channel_ = rc_hardware[0].channel;
     IRQ_Channel_ = rc_hardware[0].IQR_Channel;
 
     // Link up external C Pointer
@@ -25,7 +22,7 @@ void RC_PPM::init()
     last_capture_ = 0;
     chan_ = 0;
 
-    pin_.init(GPIO_, pin_number_, GPIO_Mode_IPD);
+    pin_.init(GPIO_, pin_number_, GPIO_Mode_IN_FLOATING);
 
     // Configure the Capture Timer
     TIM_ICInitTypeDef TIM_ICInitStruct;
@@ -39,24 +36,40 @@ void RC_PPM::init()
 
     // Configure the Timer itself
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-
     TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
     TIM_TimeBaseStructure.TIM_Period = 0xFFFE;
     TIM_TimeBaseStructure.TIM_Prescaler = (SystemCoreClock / (1000000)) - 1;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM_, &TIM_TimeBaseStructure);
 
+    // Start counting!
+    TIM_Cmd(TIM_, ENABLE);
+
     // Set up the Interrupt for the PPM
     NVIC_InitTypeDef NVIC_InitStructure;
-    NVIC_InitStructure.NVIC_IRQChannel = IRQ_Channel_;
+    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    // Start counting!
-    TIM_Cmd(TIM_, ENABLE);
+    // Tell the Timer to interrupt
+    switch(channel_)
+    {
+    case TIM_Channel_1:
+        TIM_ITConfig(TIM_, TIM_IT_CC1, ENABLE);
+        break;
+    case TIM_Channel_2:
+        TIM_ITConfig(TIM_, TIM_IT_CC2, ENABLE);
+        break;
+    case TIM_Channel_3:
+        TIM_ITConfig(TIM_, TIM_IT_CC3, ENABLE);
+        break;
+    case TIM_Channel_4:
+        TIM_ITConfig(TIM_, TIM_IT_CC4, ENABLE);
+        break;
+    }
 }
 
 float RC_PPM::read(uint8_t channel)
@@ -97,6 +110,16 @@ void RC_PPM::pulse_callback()
     }
 }
 
+extern "C"
+{
+
+void TIM1_CC_IRQHandler(void)
+{
+    if(RC_PPMPtr != NULL)
+    {
+        RC_PPMPtr->pulse_callback();
+    }
+}
 
 void TIM2_IRQHandler(void)
 {
@@ -104,4 +127,15 @@ void TIM2_IRQHandler(void)
     {
         RC_PPMPtr->pulse_callback();
     }
+}
+
+void TIM3_IRQHandler(void)
+{
+    volatile int test = 0;
+}
+
+void TIM4_IRQHandler(void)
+{
+    volatile int test = 0;
+}
 }

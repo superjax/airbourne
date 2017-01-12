@@ -1,7 +1,7 @@
 #ifndef HMC5883L_H
 #define HMC5883L_H
 
-#include "lib/Vector/vector3.h"
+#include "vector3.h"
 #include "i2c.h"
 #include "gpio.h"
 
@@ -60,7 +60,7 @@ public:
 
     bool init(I2C *I2CDev);
     void update();
-    void read(vector_t *mag);
+    void read(vector3 *mag);
     bool new_data();
 
     void data_read_CB();
@@ -72,9 +72,9 @@ private:
 
     GPIO DRDY_;
 
-    void blocking_read(vector_t *data);
+    void blocking_read(vector3 *data);
 
-    vector_t gain_;
+    vector3 gain_;
 
     bool new_data_;
 

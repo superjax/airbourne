@@ -10,8 +10,7 @@ public:
     typedef enum
     {
         PPM,
-        DSM2,
-        DSMX
+        DSM
     } mode_t;
 
     RC() {}

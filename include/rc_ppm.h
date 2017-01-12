@@ -6,7 +6,7 @@
 #include "board.h"
 
 
-class RC_PPM : RC
+class RC_PPM : public RC
 {
 public:
     RC_PPM();

@@ -9,7 +9,10 @@ RC_DSM::RC_DSM()
     RC_DSMPtr = this;
 }
 
-void RC_DSM::init(){}
+void RC_DSM::init()
+{
+    init(DSM_2048);
+}
 
 void RC_DSM::init(dsm_type_t dsm_type)
 {
@@ -47,7 +50,7 @@ void RC_DSM::handle_byte(uint8_t c)
 {
     incoming_ = true;
     uint64_t now = micros();
-    uint64_t diff = last_data_receive_us_ - now;
+    uint64_t diff = now - last_data_receive_us_;
     last_data_receive_us_ = now;
     if (diff > 5000)
     {
@@ -74,7 +77,7 @@ uint32_t RC_DSM::readus(uint8_t channel)
             uint8_t chan = 0x0F & (frame_[i -1] >> shift_);
             if(chan < num_channels_)
             {
-                uint16_t raw = (uint16_t) (((frame_[i -1] & mask_ ) << 8) || frame_[i]);
+                uint16_t raw = (uint16_t) (((frame_[i -1] & mask_ ) << 8) | frame_[i]);
                 if(DSM_2048)
                 {
                     RC_raw_[chan] = (raw >> 1) + 988;

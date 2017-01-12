@@ -29,7 +29,8 @@
 
 void enablePeripherals()
 {
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 | RCC_APB1Periph_TIM4 , ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3 | RCC_APB1Periph_TIM4 |
+                         RCC_APB1Periph_USART2 | RCC_APB1Periph_USART3, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
                          RCC_APB2Periph_GPIOC | RCC_APB2Periph_TIM1 | RCC_APB2Periph_ADC1 |
                          RCC_APB2Periph_USART1, ENABLE);
@@ -140,7 +141,7 @@ pwm_hardware_struct_t pwm_hardware[6] =
 // RC Configuration
 pwm_hardware_struct_t rc_hardware[8] =
 {
-	{GPIOA, GPIO_Pin_0, TIM2, TIM_Channel_1, TIM2_IRQn},
+    {GPIOA, GPIO_Pin_0, TIM2, TIM_Channel_1, TIM2_IRQn},
 	{GPIOA, GPIO_Pin_1, TIM2, TIM_Channel_2, TIM2_IRQn},
 	{GPIOA, GPIO_Pin_2, TIM2, TIM_Channel_3, TIM2_IRQn},
 	{GPIOA, GPIO_Pin_3, TIM2, TIM_Channel_4, TIM2_IRQn},
@@ -154,8 +155,8 @@ UART_Hardware_Config_t UART_Hardware_Configuration_Array[3] =
 {
   {USART1, GPIOA, GPIO_Pin_9, GPIO_Pin_10, DMA1_Channel4, DMA1_Channel5,
    DMA1_Channel4_IRQn, DMA1_Channel5_IRQn, USART1_IRQn, DMA1_IT_TC4, DMA1_IT_TC5},
-  {USART2, GPIOA, GPIO_Pin_2, GPIO_Pin_3,  DMA1_Channel6, DMA1_Channel7,
-   DMA1_Channel6_IRQn, DMA1_Channel7_IRQn, USART2_IRQn, DMA1_IT_TC6, DMA1_IT_TC7},
+  {USART2, GPIOA, GPIO_Pin_2, GPIO_Pin_3,  DMA1_Channel7, DMA1_Channel6,
+   DMA1_Channel7_IRQn, DMA1_Channel6_IRQn, USART2_IRQn, DMA1_IT_TC7, DMA1_IT_TC6},
   {USART3, GPIOB, GPIO_Pin_10, GPIO_Pin_11, DMA1_Channel2, DMA1_Channel3,
    DMA1_Channel2_IRQn, DMA1_Channel3_IRQn, USART3_IRQn, DMA1_IT_TC2, DMA1_IT_TC3},
 };

@@ -36,7 +36,7 @@ THE SOFTWARE.
 #include "i2c.h"
 #include "gpio.h"
 
-#include "lib/Vector/vector3.h"
+#include "vector3.h"
 
 #define MPU6050_ADDRESS_AD0_LOW     0x68 // address pin low (GND), default for InvenSense evaluation board
 #define MPU6050_ADDRESS_AD0_HIGH    0x69 // address pin high (VCC)
@@ -373,15 +373,17 @@ public:
 
     void register_transfer_complete_CB(void (*functionPtr)(void));
 
+    bool new_data(void);
+
     // Blocking Read Functions
-    void read_accel(vector_t *acc);
-    void read_gyro(vector_t* gyr);
+    void read_accel(vector3 *acc);
+    void read_gyro(vector3* gyr);
     void read_temp(float* temp);
-    void read_all(vector_t* acc, vector_t* gyro, float *temp);
+    void read_all(vector3* acc, vector3* gyro, float *temp);
 
     // Asynchronous Read Functions
     void request_async_update();
-    void async_read_all(vector_t* acc, vector_t* gyro, float*temp, uint64_t* time_us);
+    bool async_read_all(vector3* acc, vector3* gyro, float*temp, uint64_t* time_us);
 
     // Data asynchronous callbacks (need to be public so the IRQ's can get to them)
     void I2C_complete_CB();
@@ -392,6 +394,7 @@ private:
 
     float gyro_scale_;
     float accel_scale_;
+    bool new_data_;
 
     // Static data for filling by asynchronous I2C
     uint8_t data_buffer_[14];

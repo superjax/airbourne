@@ -1,26 +1,49 @@
-#include "board.h"
-#include "rc.h"
+#include <airbourne.h>
+
+UART serial;
+
+static void _putc(void *p, char c)
+{
+    (void)p; // avoid compiler warning about unused variable
+    serial.put_byte((uint8_t*)&c, 1);
+}
 
 int main()
 {
-    SystemInit();
-    OSCinit();
-    enableInterrupts();
-    enablePeripherals();
-    startWallClock();
+    airbourne_init();
 
-    RC_DSM rc;
+    serial.init(1, 115200, UART::MODE_DMA_TX_RX);
+    init_printf(NULL, _putc);
 
-    UART uart1, uart2, uart3;
-    uart1.init(1, 115200, UART::MODE_DMA_TX_RX);
-    uart2.init(2, 115200, UART::MODE_DMA_TX_RX);
-    uart3.init(3, 115200, UART::MODE_DMA_TX_RX);
+    RC* rc;
+    RC_DSM rc_dsm;
+    RC_PPM rc_ppm;
+    uint8_t mode = RC::PPM;
 
-//    rc.init(RC_DSM::DSM_2048);
+    switch(mode)
+    {
+    case RC::DSM:
+        rc = & rc_dsm;
+        break;
+    case RC::PPM:
+        rc = & rc_ppm;
+        break;
+    }
+
+    rc->init();
+
+    uint16_t read_rc[8];
 
     while(1)
     {
-        volatile int wait = 0;
+        for(int i = 0; i < 8; i++)
+        {
+            read_rc[i] = rc->readus(i);
+            printf("%d\t", read_rc[i]);
+        }
+        delay_ms(100);
+        printf("\n");
     }
+
 
 }

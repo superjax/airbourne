@@ -117,7 +117,7 @@ void MPU6050::register_transfer_complete_CB(void (*functionPtr)(void))
 }
 
 // Blocking Read Functions
-void MPU6050::read_accel(vector_t *acc)
+void MPU6050::read_accel(vector3 *acc)
 {
     uint8_t buf[6];
     read(MPU6050_RA_ACCEL_XOUT_H, buf, 6);
@@ -128,7 +128,7 @@ void MPU6050::read_accel(vector_t *acc)
 }
 
 
-void MPU6050::read_gyro(vector_t* gyr)
+void MPU6050::read_gyro(vector3* gyr)
 {
     uint8_t buf[6];
     read(MPU6050_RA_GYRO_XOUT_H, buf, 6);
@@ -148,7 +148,7 @@ void MPU6050::read_temp(float* temp)
 }
 
 
-void MPU6050::read_all(vector_t* acc, vector_t* gyro, float* temp)
+void MPU6050::read_all(vector3* acc, vector3* gyro, float* temp)
 {
     uint8_t buf[14];
     read(MPU6050_RA_ACCEL_XOUT_H, buf, 14);
@@ -173,8 +173,10 @@ void MPU6050::request_async_update()
 }
 
 // This converts data in the buffer to the various measurements in SI units
-void MPU6050::async_read_all(vector_t *acc, vector_t *gyro, float *temp, uint64_t *time_us)
+bool MPU6050::async_read_all(vector3 *acc, vector3 *gyro, float *temp, uint64_t *time_us)
 {
+    bool out = new_data_;
+
     acc->x = (float)((int16_t)((data_buffer_[0] << 8) | data_buffer_[1])) * accel_scale_;
     acc->y = (float)((int16_t)((data_buffer_[2] << 8) | data_buffer_[3])) * accel_scale_;
     acc->z = (float)((int16_t)((data_buffer_[4] << 8) | data_buffer_[5])) * accel_scale_;
@@ -186,6 +188,15 @@ void MPU6050::async_read_all(vector_t *acc, vector_t *gyro, float *temp, uint64_
     gyro->z = (float)((int16_t)((data_buffer_[12] << 8) | data_buffer_[13])) * gyro_scale_;
 
     *time_us = time_us_;
+
+    new_data_ = false;
+
+    return out;
+}
+
+bool MPU6050::new_data()
+{
+    return new_data_;
 }
 
 bool MPU6050::write(uint8_t reg, uint8_t data)
@@ -200,6 +211,7 @@ bool MPU6050::read(uint8_t reg, uint8_t *data, uint32_t len)
 
 void MPU6050::I2C_complete_CB()
 {
+    new_data_ = true;
     // Here, we have gotten brand new data over I2C, so it's time to call the registered callback
     if(completeCB_ != NULL)
     {

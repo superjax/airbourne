@@ -21,11 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "board.h"
-#include "gpio.h"
-#include "led.h"
-#include "uart.h"
-#include "printf.h"
+#include <airbourne.h>
 
 UART Serial1;
 
@@ -42,13 +38,9 @@ void recieve_byte_CB(uint8_t c)
 
 int main(void)
 {
-    SystemInit();
-    OSCinit();
-    enablePeripherals();
-    enableInterrupts();
-    startWallClock();
-    initLED();
-    Serial1.init(1, 115200, UART::MODE_DMA_TX_RX);
+    airbourne_init();
+
+    Serial1.init(2, 115200, UART::MODE_DMA_TX_RX);
     init_printf(NULL, _putc);
     LED0.toggle();
 

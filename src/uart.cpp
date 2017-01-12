@@ -107,7 +107,7 @@ void UART::USART_Configuration()
     /* USART configuration */
     USART_Init(UART_Base_addr_, &USART_InitStructure);
 
-    /* Enable the USART1 */
+    /* Enable the USART */
     USART_Cmd(UART_Base_addr_, ENABLE);
 }
 
@@ -132,8 +132,8 @@ void UART::NVIC_Configuration()
     {
         NVIC_InitStructure.NVIC_IRQChannel = TxDMAIRQ_;
         NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+        NVIC_Init(&NVIC_InitStructure);
     }
-    NVIC_Init(&NVIC_InitStructure);
 
 
 }

@@ -49,11 +49,12 @@ A2L=arm-none-eabi-addr2line
 #################################
 # Working directories
 #################################
-BREEZY_DIR = ../../..
+AIRBOURNE_DIR = ../../..
 ROOT		 = .
 SRC_DIR		 = $(ROOT)
-CMSIS_DIR	 = $(BREEZY_DIR)/lib/CMSIS
-STDPERIPH_DIR	 = $(BREEZY_DIR)/lib/STM32F10x_StdPeriph_Driver
+EMBED_MATH_DIR   = $(AIRBOURNE_DIR)/lib/math
+CMSIS_DIR	 = $(AIRBOURNE_DIR)/lib/CMSIS
+STDPERIPH_DIR	 = $(AIRBOURNE_DIR)/lib/STM32F10x_StdPeriph_Driver
 OBJECT_DIR	 = obj
 BIN_DIR		 = obj
 
@@ -61,44 +62,40 @@ BIN_DIR		 = obj
 #################################
 # Source Files
 #################################
-ASOURCES = $(BREEZY_DIR)/startup_stm32f10x_md_gcc.s
+ASOURCES = $(AIRBOURNE_DIR)/startup_stm32f10x_md_gcc.s
 
 VPATH		:= $(SRC_DIR):$(SRC_DIR)/startups
 
 # Search path and source files for the CMSIS sources
 VPATH		:= $(VPATH):$(CMSIS_DIR)/CM3/CoreSupport:$(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
 CMSIS_SRC	 = $(notdir $(wildcard $(CMSIS_DIR)/CM3/CoreSupport/*.c \
-				       $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x/*.c))
+                                       $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x/*.c))
 
 # Search path and source files for the ST stdperiph library
 VPATH		:= $(VPATH):$(STDPERIPH_DIR)/src
 STDPERIPH_SRC	 = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
 
-# Add linear Algebra Classes
-VPATH := $(VPATH):$(BREEZY_DIR)/lib/math
-MATH_SRC = $(notdir $(wildcard $(BREEZY_DIR)/lib/math/*.cpp))
+# Add Embedded Math Library
+VPATH		:= $(VPATH):$(EMBED_MATH_DIR)
+EMBED_MATH_SRC	 = $(notdir $(wildcard $(EMBED_MATH_DIR)/*.cpp))
+
+# Add Airbourne Library
+VPATH		:= $(VPATH):$(AIRBOURNE_DIR)/src
+AIRBOURNE_SRC	 = $(notdir $(wildcard $(AIRBOURNE_DIR)/src/*.cpp))
 
 CSOURCES =  $(CMSIS_SRC) \
-	    $(STDPERIPH_SRC)
+            $(STDPERIPH_SRC)
 
 CXXSOURCES = $(ROOT)/main.cpp \
-             $(MATH_SRC) \
-             $(BREEZY_DIR)/board.cpp \
-             $(BREEZY_DIR)/rc.cpp \
-             $(BREEZY_DIR)/rc_ppm.cpp \
-             $(BREEZY_DIR)/rc_dsm.cpp \
-             $(BREEZY_DIR)/gpio.cpp \
-             $(BREEZY_DIR)/uart.cpp \
-             $(BREEZY_DIR)/serialport.cpp \
-
-
+             $(AIRBOURNE_SRC) \
+             $(EMBED_MATH_SRC)
 
 INCLUDE_DIRS	 = $(SRC_DIR) \
-		   $(BREEZY_DIR) \
-                   $(BREEZY_DIR)/lib/math \
-		   $(STDPERIPH_DIR)/inc \
-		   $(CMSIS_DIR)/CM3/CoreSupport \
-		   $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
+                   $(AIRBOURNE_DIR)/include \
+                   $(EMBED_MATH_DIR) \
+                   $(STDPERIPH_DIR)/inc \
+                   $(CMSIS_DIR)/CM3/CoreSupport \
+                   $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
 
 
 #################################
@@ -108,7 +105,7 @@ OBJECTS=$(addsuffix .o,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename $(ASOURCE
 OBJECTS+=$(addsuffix .o,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename $(CSOURCES))))
 OBJECTS+=$(addsuffix .o,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename $(CXXSOURCES))))
 
-#$(info $$OBJECTS is [${OBJECTS}])
+$(info $$OBJECTS is [${OBJECTS}])
 
 #################################
 # Target Output Files
@@ -138,33 +135,33 @@ DEFS=-DTARGET_STM32F10X_MD -D__CORTEX_M4 -D__FPU_PRESENT -DWORDS_STACK_SIZE=200 
 CFLAGS=-c $(MCFLAGS) $(DEBUG) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c99
 CXXFLAGS=-c $(MCFLAGS) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11
 CXXFLAGS+=-U__STRICT_ANSI__
-LDSCRIPT=$(BREEZY_DIR)/stm32_flash.ld
+LDSCRIPT=$(AIRBOURNE_DIR)/stm32_flash.ld
 LDFLAGS =-T $(LDSCRIPT) $(MCFLAGS) -lm -nostartfiles -lc --specs=rdimon.specs $(ARCH_FLAGS)  $(LTO_FLAGS)  $(DEBUG_FLAGS) -static  -Wl,-gc-sections
 
 #################################
 # Build
 #################################
 $(TARGET_HEX): $(TARGET_ELF)
-	$(CP) -O ihex --set-start 0x8000000 $< $@
+		$(CP) -O ihex --set-start 0x8000000 $< $@
 
 $(TARGET_ELF): $(OBJECTS)
-	$(CXX) -o $@ $^ $(LDFLAGS)
-	$(SIZE) $(TARGET_ELF)
+		$(CXX) -o $@ $^ $(LDFLAGS)
+		$(SIZE) $(TARGET_ELF)
 
 $(OBJECT_DIR)/$(TARGET)/%.o: %.cpp
-	@mkdir -p $(dir $@)
-	@echo %% $(notdir $<)
-	@$(CXX) -c -o $@ $(CXXFLAGS) $<
+		@mkdir -p $(dir $@)
+		@echo %% $(notdir $<)
+		@$(CXX) -c -o $@ $(CXXFLAGS) $<
 
 $(OBJECT_DIR)/$(TARGET)/%.o: %.c
-	@mkdir -p $(dir $@)
-	@echo %% $(notdir $<)
-	@$(CC) -c -o $@ $(CFLAGS) $<
+		@mkdir -p $(dir $@)
+		@echo %% $(notdir $<)
+		@$(CC) -c -o $@ $(CFLAGS) $<
 
 $(OBJECT_DIR)/$(TARGET)/%.o: %.s
-	@mkdir -p $(dir $@)
-	@echo %% $(notdir $<)
-	@$(CC) -c -o $@ $(CFLAGS) $<
+		@mkdir -p $(dir $@)
+		@echo %% $(notdir $<)
+		@$(CC) -c -o $@ $(CFLAGS) $<
 
 
 #################################
@@ -173,10 +170,10 @@ $(OBJECT_DIR)/$(TARGET)/%.o: %.s
 .PHONY: all flash clean
 
 clean:
-	rm -f $(OBJECTS) $(TARGET_ELF) $(TARGET_HEX) $(BIN_DIR)/output.map
+		rm -f $(OBJECTS) $(TARGET_ELF) $(TARGET_HEX) $(BIN_DIR)/output.map
 
 flash: $(TARGET_HEX)
-	stty -F $(SERIAL_DEVICE) raw speed 921600 -crtscts cs8 -parenb -cstopb -ixon
-	stm32flash -w $(TARGET_HEX) -v -g 0x0 -b 921600 $(SERIAL_DEVICE)
+		stty -F $(SERIAL_DEVICE) raw speed 921600 -crtscts cs8 -parenb -cstopb -ixon
+		stm32flash -w $(TARGET_HEX) -v -g 0x0 -b 921600 $(SERIAL_DEVICE)
 
 
