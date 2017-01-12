@@ -8,12 +8,12 @@ class IMU
 {
 public:
   IMU();
-  virtual bool init() = 0;
-  virtual void read_all(vector3* accel, vector3* gyro, float* temp) = 0;
-  virtual void request_update(volatile uint8_t *status) = 0;
+  bool init(){}
+  void read_all(vector3* accel, vector3* gyro, float* temp){}
+  void request_update(volatile uint8_t *status){}
 
-  virtual void register_external_interrupt_callback(void (*CB)(void)) = 0;
-  virtual void register_data_ready_callback(void (*CB)()) = 0;
+  void register_external_interrupt_callback(void (*CB)(void)){}
+  void register_data_ready_callback(void (*CB)()){}
 };
 
 #endif // IMU_H

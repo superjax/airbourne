@@ -9,9 +9,9 @@ class Serial
 public:
 
   Serial();
-  virtual void put_byte(uint8_t* ch, uint32_t len) = 0;
-  virtual uint8_t read_byte() = 0;
-  virtual bool bytes_waiting() = 0;
+  void put_byte(uint8_t* ch, uint32_t len){}
+  uint8_t read_byte(){}
+  bool bytes_waiting(){}
 
 };
 

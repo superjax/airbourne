@@ -38,7 +38,7 @@ public:
     Quaternionf& invert();
 
     void to_euler_fast(float* phi, float* theta, float* psi);
-    void to_euler_long(float* phi, float* theta, float* psi);
+//    void to_euler_long(float* phi, float* theta, float* psi);
 
 
 };

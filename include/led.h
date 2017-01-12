@@ -41,10 +41,4 @@ private:
   GPIO gpio_;
 };
 
-void initLED();
-
-extern LED LED0;
-extern LED LED1;
-
-
 #endif // LED_H

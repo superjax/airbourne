@@ -26,15 +26,6 @@
 #include "led.h"
 #include "board.h"
 
-LED LED0;
-LED LED1;
-
-void initLED()
-{
-  LED0 = LED(LED0_PORT, LED0_PIN);
-  LED1 = LED(LED1_PORT, LED1_PIN);
-}
-
 LED::LED(){}
 
 LED::LED(GPIO_TypeDef* port, uint16_t pin) :

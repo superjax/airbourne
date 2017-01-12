@@ -7,9 +7,9 @@ class Barometer
 {
 public:
     Barometer() {}
-    virtual bool init(I2C* I2CDev) = 0;
-    virtual void update() = 0;
-    virtual void read(float* pressure, float* temperature) = 0;
+    bool init(I2C* I2CDev) {}
+    void update(){}
+    void read(float* pressure, float* temperature){}
 };
 
 #endif // BAROMETER_H

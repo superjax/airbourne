@@ -15,10 +15,10 @@ public:
 
     RC() {}
 
-    virtual void init() = 0;
+    void init(){}
 
-    virtual uint32_t readus(uint8_t channel) = 0;
-    virtual float read(uint8_t channel) = 0;
+    uint32_t readus(uint8_t channel){}
+    float read(uint8_t channel){}
 };
 
 

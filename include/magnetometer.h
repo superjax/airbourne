@@ -7,10 +7,10 @@ class Magnetometer
 {
 public:
     Magnetometer(){}
-    virtual bool init(I2C *I2CDev) = 0;
-    virtual void read(vector3 *mag) = 0;
-    virtual bool new_data() = 0;
-    virtual void update() = 0;
+    bool init(I2C *I2CDev){}
+    void read(vector3 *mag){}
+    bool new_data(){}
+    void update(){}
 };
 
 #endif // MAGNETOMETER_H

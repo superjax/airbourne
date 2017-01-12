@@ -14,7 +14,8 @@ class PWM_Out
 public:
     PWM_Out();
 
-    void init(uint8_t type, uint16_t pin, uint16_t frequency, uint32_t max_us, uint32_t min_us);
+    void init(uint8_t pin){}
+    void init(uint8_t pin, uint16_t frequency, uint32_t max_us, uint32_t min_us);
     void enable();
     void disable();
     void write(float value);

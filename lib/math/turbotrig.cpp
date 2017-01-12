@@ -5,9 +5,7 @@
  *      Author: James Jackson
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 
 #include <turbotrig.h>
 
@@ -287,8 +285,3 @@ int32_t sign(int32_t y)
 {
   return (0 < y) - (y < 0);
 }
-
-#ifdef __cplusplus
-}
-#endif
-

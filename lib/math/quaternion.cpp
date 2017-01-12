@@ -8,7 +8,6 @@
 #include "quaternion.h"
 #include "vector3.h"
 #include "turbotrig.h"
-#include "math.h"
 
 Quaternionf::Quaternionf()
 {
@@ -112,9 +111,9 @@ void Quaternionf::to_euler_fast(float *phi, float *theta, float *psi)
     *psi = atan2_approx(2.0f * (w*z + x*y), 1.0f - 2.0f * (y*y + z*z));
 }
 
-void Quaternionf::to_euler_long(float *phi, float *theta, float *psi)
-{
-    *phi = atan2(2.0f * (w*x + y*z), 1.0f - 2.0f * (x*x + y*y));
-    *theta = asin(2.0f*(w*y - z*x));
-    *psi = atan2(2.0f * (w*z + x*y), 1.0f - 2.0f * (y*y + z*z));
-}
+//void Quaternionf::to_euler_long(float *phi, float *theta, float *psi)
+//{
+//    *phi = atan2(2.0f * (w*x + y*z), 1.0f - 2.0f * (x*x + y*y));
+//    *theta = asin(2.0f*(w*y - z*x));
+//    *psi = atan2(2.0f * (w*z + x*y), 1.0f - 2.0f * (y*y + z*z));
+//}

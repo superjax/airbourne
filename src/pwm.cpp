@@ -5,11 +5,9 @@
 
 
 PWM_Out::PWM_Out()
-{
+{}
 
-}
-
-void PWM_Out::init(uint8_t type, uint16_t pin, uint16_t frequency, uint32_t max_us, uint32_t min_us)
+void PWM_Out::init(uint8_t pin, uint16_t frequency, uint32_t max_us, uint32_t min_us)
 {
   // Resolve the appropriate pin and timer
   GPIO_TypeDef* GPIOPtr;
@@ -17,7 +15,7 @@ void PWM_Out::init(uint8_t type, uint16_t pin, uint16_t frequency, uint32_t max_
   TIM_TypeDef* TIMPtr;
   uint16_t channel;
 
-  if(type & PWM_PORT)
+  if(pin < 7)
   {
     GPIOPtr = pwm_hardware[pin - 1].GPIO;
     GPIO_Pin = pwm_hardware[pin - 1].pin;
@@ -25,7 +23,7 @@ void PWM_Out::init(uint8_t type, uint16_t pin, uint16_t frequency, uint32_t max_
     channel = pwm_hardware[pin - 1].channel;
   }
 
-  else if(type & RC_PORT)
+  else
   {
     GPIOPtr = rc_hardware[pin - 1].GPIO;
     GPIO_Pin = rc_hardware[pin - 1].pin;

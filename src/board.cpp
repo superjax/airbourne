@@ -160,9 +160,3 @@ UART_Hardware_Config_t UART_Hardware_Configuration_Array[3] =
   {USART3, GPIOB, GPIO_Pin_10, GPIO_Pin_11, DMA1_Channel2, DMA1_Channel3,
    DMA1_Channel2_IRQn, DMA1_Channel3_IRQn, USART3_IRQn, DMA1_IT_TC2, DMA1_IT_TC3},
 };
-
-//I2C_Hardware_Config_t I2C_Hardware_Configuration_Array[2] =
-//{
-//  {I2C1, GPIOB, GPIO_Pin_6, GPIO_Pin_7, I2C1_EV_IRQn, I2C1_ER_IRQn, RCC_APB1Periph_I2C1},
-//  {I2C2, GPIOB, GPIO_Pin_10, GPIO_Pin_11, I2C2_EV_IRQn, I2C2_ER_IRQn, RCC_APB1Periph_I2C2}
-//};
