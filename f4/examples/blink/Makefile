@@ -26,7 +26,9 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-TARGET	?= blink
+TARGET = blink
+
+BOARD ?= REVO
 
 DEBUG ?= GDB
 
@@ -125,11 +127,12 @@ CSOURCES =  $(CMSIS_SRC) \
 	    	$(USBCDC_SRC) \
 	    	$(PROCESSOR_SRC)
 
-CXXSOURCES = $(ROOT)/main.cpp
+CXXSOURCES = 	$(ROOT)/main.cpp \
+				$(PROCESSOR_DIR)/src/gpio.cpp
 
 INCLUDE_DIRS	 = 	$(SRC_DIR) \
-		   			$(AIRBOURNE_DIR)/include \
-		   			$(AIRBOURNE_DIR)/examples/f4/include \
+					$(AIRBOURNE_DIR)/include \
+					$(PROCESSOR_DIR)/include \
 		   			$(MATH_DIR) \
 		   			$(STDPERIPH_DIR)/inc \
 		   			$(USBOTG_DIR)/inc \
@@ -137,8 +140,7 @@ INCLUDE_DIRS	 = 	$(SRC_DIR) \
 		   			$(USBCDC_DIR)/inc \
 		   			$(CMSIS_DIR)/CM4/CoreSupport \
 		   			$(CMSIS_DIR)/CM4/DeviceSupport/ST/STM32F4xx \
-		   			$(CMSIS_DIR)/CM4/DeviceSupport/ST/STM32F4xx/Include \
-		   			$(PROCESSOR_DIR)/include
+		   			$(CMSIS_DIR)/CM4/DeviceSupport/ST/STM32F4xx/Include
 
 
 
@@ -171,11 +173,10 @@ endif
 # Flags
 #################################
 MCFLAGS=-mcpu=cortex-m4 -mthumb -march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -Wdouble-promotion
-OPTIMIZE =
 DEBUG = -DDebug -ggdb3
 DEFS=-DSTM32F40_41xxx -D__CORTEX_M4 -D__FPU_PRESENT -DWORDS_STACK_SIZE=200 -DUSE_STDPERIPH_DRIVER
-CFLAGS=-c $(MCFLAGS) $(DEBUG) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c99
-CXXFLAGS=-c $(MCFLAGS) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11 -U__STRICT_ANSI__
+CFLAGS=-c $(MCFLAGS) $(DEBUG) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c99 $DTARGET_$(BOARD)
+CXXFLAGS=-c $(MCFLAGS) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11 -U__STRICT_ANSI__ $DTARGET_$(BOARD)
 LDFLAGS =-T $(LDSCRIPT) $(MCFLAGS) -lm -nostartfiles -lc --specs=rdimon.specs $(ARCH_FLAGS)  $(LTO_FLAGS)  $(DEBUG_FLAGS) -static  -Wl,-gc-sections
 
 #################################

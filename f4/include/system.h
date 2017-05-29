@@ -19,6 +19,12 @@
 #include <stdint.h>
 #pragma once
 
+#include "stm32f4xx_conf.h"
+#define TARGET_REVO
+#ifdef TARGET_REVO
+#include "revo_f4.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

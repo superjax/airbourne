@@ -24,41 +24,42 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#include "stm32f10x_conf.h"
-
-typedef enum
-{
-  HIGH,
-  LOW
-} gpio_write_t;
-
-typedef enum
-{
-  INPUT,
-  OUTPUT,
-  PERIPH_OUT,
-  PERIPH_IN,
-  PERIPH_IN_OUT,
-  ANALOG,
-  EXTERNAL_INTERRUPT
-}gpio_mode_t;
+#include "system.h"
 
 class GPIO
 {
 public:
-  GPIO();
-  GPIO(GPIO_TypeDef *BasePort, uint16_t pin, GPIOMode_TypeDef mode);
+  enum
+  {
+    HIGH,
+    LOW
+  };
 
-  void init(GPIO_TypeDef* BasePort, uint16_t pin, GPIOMode_TypeDef mode);
-  void write(gpio_write_t state);
+  enum
+  {
+    INPUT,
+    OUTPUT,
+    PERIPH_OUT,
+    PERIPH_IN,
+    PERIPH_IN_OUT,
+    ANALOG,
+    EXTERNAL_INTERRUPT
+  };
+
+
+  GPIO();
+  GPIO(GPIO_TypeDef *BasePort, uint16_t pin, uint8_t mode);
+
+  void init(GPIO_TypeDef* BasePort, uint16_t pin, uint8_t mode);
+  void write(uint8_t state);
   void toggle(void);
-  void set_mode(GPIOMode_TypeDef mode);
+  void set_mode(uint8_t mode);
   bool read();
 
 private:
   uint16_t pin_;
   GPIO_TypeDef* port_;
-  GPIOMode_TypeDef mode_;
+  uint8_t mode_;
 
 };
 

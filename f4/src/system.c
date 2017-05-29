@@ -67,6 +67,8 @@ void systemInit(void)
     NVIC_SetVectorTable((uint32_t)&isr_vector_table_base, 0x0);
     RCC_AHB2PeriphClockCmd( RCC_AHB2Periph_OTG_FS, DISABLE);
 
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
     // Init cycle counter
     cycleCounterInit();
 

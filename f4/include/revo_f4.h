@@ -1,0 +1,10 @@
+#ifndef REVO_FH_BOARD_CONFIGURATION_H__
+#define REVO_FH_BOARD_CONFIGURATION_H__
+
+#define LED1_GPIO GPIOB
+#define LED1_PIN  GPIO_Pin_4
+#define LED2_GPIO GPIOB
+#define LED2_PIN  GPIO_Pin_5
+
+
+#endif

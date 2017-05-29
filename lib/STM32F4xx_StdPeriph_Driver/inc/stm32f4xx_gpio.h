@@ -253,7 +253,15 @@ typedef struct
 #endif /* STM32F446xx */
 
 /** 
-  * @brief   AF 1 selection  
+  * @brief   AF 1 selection      GPIO_InitTypeDef GPIO_InitStruct;
+
+    GPIO_InitStruct.GPIO_Mode = mode;
+    GPIO_InitStruct.GPIO_Pin = pin;
+
+    // Who cares about power usage?  Go as fast as possible.
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
+
+    GPIO_Init(BasePort, &GPIO_InitStruct);
   */ 
 #define GPIO_AF_TIM1          ((uint8_t)0x01)  /* TIM1 Alternate Function mapping */
 #define GPIO_AF_TIM2          ((uint8_t)0x01)  /* TIM2 Alternate Function mapping */

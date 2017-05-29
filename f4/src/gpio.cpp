@@ -24,35 +24,32 @@
 #include "gpio.h"
 
 GPIO::GPIO(){}
-GPIO::GPIO(GPIO_TypeDef* BasePort, uint16_t pin, GPIOMode_TypeDef mode)
+GPIO::GPIO(GPIO_TypeDef* BasePort, uint16_t pin, uint8_t mode)
 {
     init(BasePort, pin, mode);
 }
 
 void GPIO::init(GPIO_TypeDef* BasePort, uint16_t pin, uint8_t mode)
 {
-    mode_ = mode;
     pin_ = pin;
     port_ = BasePort;
     set_mode(mode);
 }
 
-void GPIO::write(gpio_write_t state)
+void GPIO::write(uint8_t state)
 {
-    if(mode_ == GPIO_Mode_Out_OD ||
-       mode_ == GPIO_Mode_Out_PP)
+    if(mode_ == OUTPUT)
     {
         if(state)
-            port_->BRR = pin_;
+            GPIO_SetBits(port_, pin_);
         else
-            port_->BSRR = pin_;
+            GPIO_ResetBits(port_, pin_);
     }
 }
 
 void GPIO::toggle()
 {
-    if(mode_ == GPIO_Mode_Out_OD ||
-       mode_ == GPIO_Mode_Out_PP)
+    if(mode_ == OUTPUT)
     {
         if(GPIO_ReadOutputDataBit(port_, pin_))
             GPIO_ResetBits(port_, pin_);
@@ -64,16 +61,12 @@ void GPIO::toggle()
 bool GPIO::read()
 {
     // If it's an input pin, use the read input data
-    if(mode_ == GPIO_Mode_IN_FLOATING ||
-            mode_ == GPIO_Mode_IPD ||
-            mode_ == GPIO_Mode_IPU)
+    if(mode_ == INPUT)
     {
         return port_->IDR & pin_;
-//        return (GPIO_ReadInputDataBit(port_, pin_));
     }
     else
     {
-//        return (GPIO_ReadOutputDataBit(port_, pin_));
         return port_->ODR & pin_;
     }
 }
@@ -81,9 +74,11 @@ bool GPIO::read()
 void GPIO::set_mode(uint8_t mode)
 {
     GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = pin_;
 
     switch(mode)
+    {
     case INPUT:
       GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
       break;
@@ -110,6 +105,7 @@ void GPIO::set_mode(uint8_t mode)
     case ANALOG:
       GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AN;
       break;
+    }
 
     // Who cares about power usage?  Go as fast as possible.
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
@@ -117,4 +113,5 @@ void GPIO::set_mode(uint8_t mode)
     // Initialize the GPIO
     GPIO_Init(port_, &GPIO_InitStruct);
     mode_ = mode;
+    write(LOW);
 }
