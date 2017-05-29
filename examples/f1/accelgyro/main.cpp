@@ -20,20 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "board.h"
-#include "gpio.h"
-#include "led.h"
-#include "uart.h"
-#include "printf.h"
-#include "old_i2c.h"
-#include "mpu6050.h"
+
+#include "airbourne.h"
 
 // This is a wrapper for the printf function that puts the stdout
 // stream onto UART1
 static void _putc(void *p, char c)
 {
   (void)p; // avoid compiler warning about unused variable
-  UART1.put_byte((uint8_t*)&c, 1);
+  _uart1.put_byte((uint8_t*)&c, 1);
 }
 
 // This the memory and callbacks for IMU updates
@@ -44,17 +39,17 @@ static void _putc(void *p, char c)
 // the IMU calls the data_ready_CB.  We can then immediately call the read_all
 // function, which pulls the data into local variables ready for processing
 volatile uint8_t status;
-vector_t accel;
-vector_t gyro;
+vector3 accel;
+vector3 gyro;
 float temp;
 void IMU_interrupt_CB(void)
 {
-  imu.request_update(&status);
+  _mpu6050.request_async_update();
 }
 
 void IMU_data_ready_CB(void)
 {
-  imu.read_all(&accel, &gyro, &temp);
+  _mpu6050.read_all(&accel, &gyro, &temp);
 
   static int output_throttle;
   if(output_throttle == 10)
@@ -76,24 +71,20 @@ void IMU_data_ready_CB(void)
 
 int main(void)
 {
-  enablePeripherals();
-  enableInterrupts();
-  startWallClock();
-  initLED();
-  UART1.init(1, 115200, true, false);
+  airbourne_init();
+  _uart1.init(1, 115200, UART::MODE_DMA_TX_RX);
   init_printf(NULL, _putc);
 
-  LED0.toggle();
-  I2CDev_2.i2cInit(I2CDEV_2);
+  _LED0.toggle();
+  _i2c.init(2);
 
-  imu.init();
-  imu.register_external_interrupt_callback(&IMU_interrupt_CB);
-  imu.register_data_ready_callback(&IMU_data_ready_CB);
+  _mpu6050.init(&_i2c, MPU6050::ACCEL_FSR_8G, MPU6050::GYRO_FSR_2000DPS, MPU6050::LPF_42HZ, true);
+  _mpu6050.register_transfer_complete_CB(&IMU_data_ready_CB);
 
   while (1)
   {
     delay_ms(500);
-    LED0.toggle();
-    LED1.toggle();
+    _LED0.toggle();
+    _LED1.toggle();
   }
 }

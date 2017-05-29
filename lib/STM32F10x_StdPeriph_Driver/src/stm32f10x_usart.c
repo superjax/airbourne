@@ -23,9 +23,6 @@
 #include "stm32f10x_usart.h"
 #include "stm32f10x_rcc.h"
 
-
-#include "stm32f10x_gpio.h"
-
 /** @addtogroup STM32F10x_StdPeriph_Driver
   * @{
   */
@@ -410,7 +407,6 @@ void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState Ne
   /* Get the interrupt position */
   itpos = USART_IT & IT_Mask;
   itmask = (((uint32_t)0x01) << itpos);
-
     
   if (usartreg == 0x01) /* The IT is in CR1 register */
   {

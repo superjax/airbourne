@@ -3,7 +3,7 @@
 #include "uart.h"
 #include "printf.h"
 #include "mpu6050.h"
-#include "lib/Vector/vector3.h"
+#include "vector3.h"
 
 UART Serial1;
 MPU6050 mpu;
@@ -15,7 +15,7 @@ static void _putc(void *p, char c)
 }
 
 
-vector_t accel, gyro;
+vector3 accel, gyro;
 float temp;
 uint64_t time;
 

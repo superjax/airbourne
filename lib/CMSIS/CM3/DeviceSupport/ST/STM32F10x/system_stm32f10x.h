@@ -37,8 +37,6 @@
  extern "C" {
 #endif 
 
-#include <stdbool.h>
-
 /** @addtogroup STM32F10x_System_Includes
   * @{
   */
@@ -79,7 +77,6 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
   */
   
 extern void SystemInit(void);
-extern void SetSysClock(bool overclock);
 extern void SystemCoreClockUpdate(void);
 /**
   * @}

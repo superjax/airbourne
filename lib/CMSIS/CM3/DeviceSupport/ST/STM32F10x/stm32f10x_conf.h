@@ -25,15 +25,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* Uncomment/Comment the line below to enable/disable peripheral header file inclusion */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "stm32f10x_adc.h"
 #include "stm32f10x_bkp.h"
-#include "stm32f10x_can.h"
-#include "stm32f10x_cec.h"
-#include "stm32f10x_crc.h"
+//#include "stm32f10x_can.h"
+//#include "stm32f10x_cec.h"
+//#include "stm32f10x_crc.h"
 #include "stm32f10x_dac.h"
 #include "stm32f10x_dbgmcu.h"
 #include "stm32f10x_dma.h"
@@ -77,10 +73,6 @@ extern void assert_param(int val);
 #else
   #define assert_param(expr) ((void)0)
 #endif /* USE_FULL_ASSERT */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __STM32F10x_CONF_H */
 

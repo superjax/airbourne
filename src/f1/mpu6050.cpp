@@ -236,12 +236,12 @@ extern "C" void IMU_EXTI_IRQHandler(void)
     }
     EXTI_ClearITPendingBit(IMU_EXTERNAL_INTERRUPT_LINE);
 
-    // MAG Interrupt
-    if(EXTI_GetITStatus(MAG_EXTERNAL_INTERRUPT_LINE) != RESET)
-    {
-        HMC5883LPtr->update();
-    }
-    EXTI_ClearITPendingBit(MAG_EXTERNAL_INTERRUPT_LINE);
+//    // MAG Interrupt
+//    if(EXTI_GetITStatus(MAG_EXTERNAL_INTERRUPT_LINE) != RESET)
+//    {
+//        HMC5883LPtr->update();
+//    }
+//    EXTI_ClearITPendingBit(MAG_EXTERNAL_INTERRUPT_LINE);
 }
 //===============================================================
 

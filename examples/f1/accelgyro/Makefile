@@ -49,19 +49,20 @@ A2L=arm-none-eabi-addr2line
 #################################
 # Working directories
 #################################
-BREEZY_DIR = ../../../
-ROOT		 = .
-SRC_DIR		 = $(ROOT)
-CMSIS_DIR	 = $(BREEZY_DIR)/lib/CMSIS
-STDPERIPH_DIR	 = $(BREEZY_DIR)/lib/STM32F10x_StdPeriph_Driver
-OBJECT_DIR	 = obj
-BIN_DIR		 = obj
+AIRBOURNE_DIR 	= ../../../
+ROOT		 	= .
+SRC_DIR		 	= $(ROOT)
+CMSIS_DIR	 	= $(AIRBOURNE_DIR)/lib/CMSIS
+STDPERIPH_DIR	= $(AIRBOURNE_DIR)/lib/STM32F10x_StdPeriph_Driver
+MATH_DIR		= $(AIRBOURNE_DIR)/lib/math
+OBJECT_DIR	 	= obj
+BIN_DIR		 	= obj
 
 
 #################################
 # Source Files
 #################################
-ASOURCES = $(BREEZY_DIR)/startup_stm32f10x_md_gcc.s
+ASOURCES = $(AIRBOURNE_DIR)/startup_stm32f10x_md_gcc.s
 
 VPATH		:= $(SRC_DIR):$(SRC_DIR)/startups
 
@@ -74,25 +75,40 @@ CMSIS_SRC	 = $(notdir $(wildcard $(CMSIS_DIR)/CM3/CoreSupport/*.c \
 VPATH		:= $(VPATH):$(STDPERIPH_DIR)/src
 STDPERIPH_SRC	 = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
 
+# Search path and source files for math library
+VPATH		:= $(VPATH):$(MATH_DIR)
+MATH_SRC	= $(notdir $(wildcard $(MATH_DIR)/*.cpp))
+
 CSOURCES =  $(CMSIS_SRC) \
-	    $(STDPERIPH_SRC)
+	    	$(STDPERIPH_SRC)
 
 CXXSOURCES = $(ROOT)/main.cpp \
-	     $(BREEZY_DIR)/serialport.cpp \
-	     $(BREEZY_DIR)/board.cpp \
-	     $(BREEZY_DIR)/gpio.cpp \
-	     $(BREEZY_DIR)/led.cpp \
-	     $(BREEZY_DIR)/uart.cpp \
-	     $(BREEZY_DIR)/printf.cpp \
-	     $(BREEZY_DIR)/i2c.cpp \
-	     $(BREEZY_DIR)/mpu6050.cpp \
-	     $(BREEZY_DIR)/imu.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/serialport.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/board.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/gpio.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/led.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/uart.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/printf.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/i2c.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/mpu6050.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/imu.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/airbourne.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/hmc5883l.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/ms5611.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/rc_dsm.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/rc_ppm.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/eeprom.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/pwm.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/simonk_esk.cpp \
+	     	 $(AIRBOURNE_DIR)/src/f1/servo.cpp \
+	     	 $(MATH_SRC)
 
-INCLUDE_DIRS	 = $(SRC_DIR) \
-		   $(BREEZY_DIR) \
-		   $(STDPERIPH_DIR)/inc \
-		   $(CMSIS_DIR)/CM3/CoreSupport \
-		   $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
+INCLUDE_DIRS	 = 	$(SRC_DIR) \
+					$(MATH_DIR) \
+		   			$(AIRBOURNE_DIR)/include \
+		   			$(STDPERIPH_DIR)/inc \
+		   			$(CMSIS_DIR)/CM3/CoreSupport \
+		   			$(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
 
 
 #################################
@@ -132,7 +148,7 @@ DEFS=-DTARGET_STM32F10X_MD -D__CORTEX_M4 -D__FPU_PRESENT -DWORDS_STACK_SIZE=200 
 CFLAGS=-c $(MCFLAGS) $(DEBUG) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c99
 CXXFLAGS=-c $(MCFLAGS) $(DEFS) $(OPTIMIZE) $(DEBUG_FLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11
 CXXFLAGS+=-U__STRICT_ANSI__
-LDSCRIPT=$(BREEZY_DIR)/stm32_flash.ld
+LDSCRIPT=$(AIRBOURNE_DIR)/stm32_flash.ld
 LDFLAGS =-T $(LDSCRIPT) $(MCFLAGS) -lm -nostartfiles -lc --specs=rdimon.specs $(ARCH_FLAGS)  $(LTO_FLAGS)  $(DEBUG_FLAGS) -static  -Wl,-gc-sections
 
 #################################
@@ -172,5 +188,6 @@ clean:
 flash: $(TARGET_HEX)
 	stty -F $(SERIAL_DEVICE) raw speed 921600 -crtscts cs8 -parenb -cstopb -ixon
 	stm32flash -w $(TARGET_HEX) -v -g 0x0 -b 921600 $(SERIAL_DEVICE)
+
 
 
