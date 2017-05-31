@@ -19,7 +19,15 @@
 #include <stdint.h>
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "stm32f4xx_conf.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #ifndef TARGET_REVO
 #define TARGET_REVO
@@ -38,22 +46,13 @@ typedef struct
 } LED_configuration_t;
 extern LED_configuration_t led_config[NUM_LED];
 
+#define VCP_INDEX 0
 typedef struct
 {
   uint8_t serial_type;
   GPIO_TypeDef* GPIO;
   uint16_t rx_pin;
   uint16_t tx_pin;
-  USART_TypeDef* USARTx;
-  uint32_t rxDMAIrq;
-  uint32_t txDMAIrq;
-  uint32_t rxDMAPos;
-  DMA_Stream_TypeDef *rxDMAStream;
-  DMA_Stream_TypeDef *txDMAStream;
-  uint32_t rxDMAChannel;
-  uint32_t txDMAChannel;
-  uint32_t txDMAPeripheralBaseAddr;
-  uint32_t rxDMAPeripheralBaseAddr;
 } serial_configuration_t;
 extern serial_configuration_t serial_config[NUM_SERIAL_CONNECTIONS];
 

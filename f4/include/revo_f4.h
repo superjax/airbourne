@@ -3,7 +3,7 @@
 
 #define NUM_LED 1
 
-#define NUM_SERIAL_CONNECTIONS 3
+#define NUM_SERIAL_CONNECTIONS 1
 
 
 
