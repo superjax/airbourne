@@ -5,6 +5,8 @@
 
 #define NUM_SERIAL_CONNECTIONS 1
 
+#define NUM_SPI_CONNECTIONS 1
+
 
 
 

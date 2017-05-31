@@ -138,6 +138,8 @@ CSOURCES =  $(CMSIS_SRC) \
 CXXSOURCES = $(PROCESSOR_DIR)/src/gpio.cpp \
              $(PROCESSOR_DIR)/src/VCP.cpp \
              $(PROCESSOR_DIR)/src/spi.cpp \
+             $(PROCESSOR_DIR)/src/mpu6000_spi.cpp \
+             $(MATH_SRC)
 
 INCLUDE_DIRS	 = 	$(SRC_DIR) \
 					$(AIRBOURNE_DIR)/include \
@@ -226,5 +228,6 @@ clean:
 flash: $(TARGET_HEX)
 	stty -F $(SERIAL_DEVICE) raw speed 921600 -crtscts cs8 -parenb -cstopb -ixon
 	stm32flash -w $(TARGET_HEX) -v -g 0x0 -b 921600 $(SERIAL_DEVICE)
+
 
 

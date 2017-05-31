@@ -23,6 +23,7 @@
 extern "C" {
 #endif
 
+#include "stm32f4xx.h"
 #include "stm32f4xx_conf.h"
 
 #ifdef __cplusplus
@@ -36,6 +37,8 @@ extern "C" {
 #ifdef TARGET_REVO
 #include "revo_f4.h"
 #endif
+
+#include <stdbool.h>
 
 
 // Define the hardware configuration structs.  (These are instantiated in the board-specific c-file)
@@ -55,6 +58,23 @@ typedef struct
   uint16_t tx_pin;
 } serial_configuration_t;
 extern serial_configuration_t serial_config[NUM_SERIAL_CONNECTIONS];
+
+typedef struct
+{
+  SPI_TypeDef* dev;
+  GPIO_TypeDef* GPIO;
+  uint16_t nss_pin;
+  uint16_t sck_pin;
+  uint16_t miso_pin;
+  uint16_t mosi_pin;
+  uint32_t rcc;
+  DMA_TypeDef* dma_id;
+  uint32_t dma_channel;
+  IRQn_Type dma_rx_irqn;
+  IRQn_Type dma_tx_irqn;
+  bool leading_edge;
+} spi_configuration_t;
+extern spi_configuration_t spi_config[NUM_SPI_CONNECTIONS];
 
 
 #ifdef __cplusplus
