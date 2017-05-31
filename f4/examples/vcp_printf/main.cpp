@@ -29,16 +29,26 @@
 #include "system.h"
 #include "VCP.h"
 
+VCP* vcpPtr = NULL;
+
+void rx_callback(uint8_t byte)
+{
+  vcpPtr->put_byte(byte);
+  vcpPtr->flush();
+}
+
 int main()
 {
   systemInit();
 
   VCP vcp(serial_config[VCP_INDEX]);
+  vcpPtr = &vcp;
+  vcp.register_rx_callback(&rx_callback);
 
   while(1)
   {
-    uint8_t hello_string[] = "hello world!\n";
-    vcp.write(hello_string, 13);
+//    uint8_t hello_string[] = "hello world!\n";
+//    vcp.write(hello_string, 13);
     delay(200);
   }
 }

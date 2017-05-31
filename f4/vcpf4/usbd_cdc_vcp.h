@@ -29,6 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_conf.h"
+#include "stm32f4xx.h"
 
 #include "usbd_cdc_core.h"
 #include "usbd_conf.h"
@@ -44,6 +45,10 @@ uint32_t CDC_Send_DATA(const uint8_t *ptrBuffer, uint32_t sendLength);
 uint32_t CDC_Send_FreeBytes(void);
 uint32_t CDC_Receive_DATA(uint8_t* recvBuf, uint32_t len);       // HJI
 uint32_t CDC_Receive_BytesAvailable(void);
+void CDC_flush(void);
+
+void Register_CDC_RxCallback(void (*rx_cb_ptr)(uint8_t data));
+void CDC_RxCallback(void);
 
 uint8_t usbIsConfigured(void);  // HJI
 uint8_t usbIsConnected(void);   // HJI

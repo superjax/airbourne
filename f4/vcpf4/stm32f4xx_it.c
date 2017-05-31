@@ -98,7 +98,14 @@ void OTG_HS_IRQHandler(void)
 void OTG_FS_IRQHandler(void)
 #endif
 {
+  USB_OTG_GINTSTS_TypeDef  gintr_status;
+  gintr_status.d32 = USB_OTG_ReadCoreItr(&USB_OTG_dev);
   USBD_OTG_ISR_Handler (&USB_OTG_dev);
+
+  if ((gintr_status.b.rxstsqlvl) || (gintr_status.b.outepintr))
+  {
+    CDC_RxCallback();
+  }
 }
 
 #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED

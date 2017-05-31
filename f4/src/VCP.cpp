@@ -68,7 +68,10 @@ void VCP::put_byte(uint8_t ch)
   CDC_Send_DATA(&ch, 1);
 }
 
-bool VCP::flush(){}
+bool VCP::flush()
+{
+  CDC_flush();
+}
 void VCP::begin_write(){}
 void VCP::end_write(){}
 
@@ -76,6 +79,7 @@ void VCP::end_write(){}
 void VCP::register_rx_callback(void (*rx_callback_ptr)(uint8_t data))
 {
   rx_callback = rx_callback_ptr;
+  Register_CDC_RxCallback(rx_callback_ptr);
 }
 
 
