@@ -3,22 +3,26 @@
 SPI::SPI(spi_configuration_t config)
 {
   // Turn on the RCC for the SPI peripheral
-  RCC_APB2PeriphClockCmd(config.rcc, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
   // Initialize the GPIO Pins
   if (config.nss_pin)
   {
     using_nss = true;
-    nss_.init(config.GPIO, config.nss_pin, GPIO::PERIPH_IN_OUT);
+    nss_.init(config.GPIO, config.nss_pin, GPIO::OUTPUT);
   }
   else
   {
     using_nss = false;
   }
-  sck_.init(config.GPIO, config.nss_pin, GPIO::PERIPH_IN_OUT);
-  miso_.init(config.GPIO, config.nss_pin, GPIO::PERIPH_IN_OUT);
-  mosi_.init(config.GPIO, config.nss_pin, GPIO::PERIPH_IN_OUT);
+  sck_.init(config.GPIO, config.sck_pin, GPIO::PERIPH_IN_OUT);
+  miso_.init(config.GPIO, config.miso_pin, GPIO::PERIPH_IN_OUT);
+  mosi_.init(config.GPIO, config.mosi_pin, GPIO::PERIPH_IN_OUT);
 
+  // This may, or may not be necessary
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
 
   dev = config.dev;
   leading_edge = config.leading_edge;
@@ -33,18 +37,7 @@ SPI::SPI(spi_configuration_t config)
   spi_init_struct.SPI_NSS = SPI_NSS_Soft;
   spi_init_struct.SPI_FirstBit = SPI_FirstBit_MSB;
   spi_init_struct.SPI_CRCPolynomial = 7;
-  spi_init_struct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
-
-  if (leading_edge)
-  {
-    spi_init_struct.SPI_CPHA = SPI_CPOL_Low;
-    spi_init_struct.SPI_CPHA = SPI_CPHA_1Edge;
-  }
-  else
-  {
-    spi_init_struct.SPI_CPHA = SPI_CPOL_High;
-    spi_init_struct.SPI_CPHA = SPI_CPHA_2Edge;
-  }
+  spi_init_struct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
 
   SPI_Init(dev, &spi_init_struct);
   SPI_Cmd(dev, ENABLE);
